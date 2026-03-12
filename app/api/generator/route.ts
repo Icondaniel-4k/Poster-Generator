@@ -26,7 +26,14 @@ export async function POST(req: Request) {
       console.log(`[v0] Generating poster ${i + 1}/${imageDataUrls.length} with style: ${style}`)
 
       try {
-        const imageUrl = await generatePoster(prompt, imageDataUrl)
+        const imageUrl = await generatePoster(
+          prompt,
+          imageDataUrl,
+          candidateName,
+          position,
+          slogan,
+          style
+        )
         posters.push({
           id: `poster-${i}`,
           imageUrl: imageUrl,
