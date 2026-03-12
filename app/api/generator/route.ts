@@ -16,9 +16,9 @@ export async function POST(req: Request) {
       )
     }
 
-    const posters: Array<{ id: string; description: string; style: string }> = []
+    const posters: Array<{ id: string; imageUrl: string; style: string; prompt: string }> = []
 
-    // Generate poster descriptions for each uploaded image
+    // Generate posters for each uploaded image using Replicate
     for (let i = 0; i < imageDataUrls.length; i++) {
       const imageDataUrl = imageDataUrls[i]
       const prompt = buildPosterPrompt(candidateName, position, slogan, style)
@@ -26,19 +26,21 @@ export async function POST(req: Request) {
       console.log(`[v0] Generating poster ${i + 1}/${imageDataUrls.length} with style: ${style}`)
 
       try {
-        const description = await generatePoster(prompt, imageDataUrl)
+        const imageUrl = await generatePoster(prompt, imageDataUrl)
         posters.push({
           id: `poster-${i}`,
-          description: description,
+          imageUrl: imageUrl,
           style: style,
+          prompt: prompt,
         })
       } catch (posterError) {
         console.error(`[v0] Error generating poster ${i}:`, posterError)
         // Continue with next image if one fails
         posters.push({
           id: `poster-${i}`,
-          description: `Failed to generate poster for image ${i + 1}`,
+          imageUrl: '',
           style: style,
+          prompt: prompt,
         })
       }
     }
